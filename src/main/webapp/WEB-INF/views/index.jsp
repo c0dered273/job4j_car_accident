@@ -12,27 +12,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Accident</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 </head>
 <body>
 <div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Item</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="item" varStatus="loop" items="${list}">
-            <tr>
-                <td>${loop.index}</td>
-                <td>${item}</td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
+    <div class="row">
+        <table class="table caption-top">
+            <caption class="h4">List of accidents</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Text</th>
+                    <th scope="col">Address</th>
+                </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="accident" items="${accidents}">
+                <tr>
+                    <td>${accident.id}</td>
+                    <td>${accident.name}</td>
+                    <td>${accident.text}</td>
+                    <td>${accident.address}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>
