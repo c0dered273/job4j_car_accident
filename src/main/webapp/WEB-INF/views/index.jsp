@@ -12,8 +12,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Accident</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 </head>
 <body>
-    Hello : Accident
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="item" varStatus="loop" items="${list}">
+            <tr>
+                <td>${loop.index}</td>
+                <td>${item}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
