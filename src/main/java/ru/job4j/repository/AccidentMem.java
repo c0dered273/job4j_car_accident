@@ -18,6 +18,10 @@ public class AccidentMem {
         accidents.put(accident.getId(), accident);
     }
 
+    public void update(Accident accident) {
+        accidents.put(accident.getId(), accident);
+    }
+
     public Optional<Accident> findById(long id) {
         return Optional.of(accidents.get(id));
     }

@@ -17,24 +17,38 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
+    <div class="mt-3 mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Home</a>
+            </li>
+        </ul>
+    </div>
+    <div class="mb-3">
+        <div class="mb-4">
+            <h4>Accidents</h4>
+        </div>
+        <div class="mb-2">
+            <a class="btn btn-primary" role="button" href="<c:url value="/create"/>">Add new accident</a>
+        </div>
         <table class="table caption-top">
-            <caption class="h4">List of accidents</caption>
             <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Text</th>
-                    <th scope="col">Address</th>
-                </tr>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Text</th>
+                <th scope="col">Address</th>
+            </tr>
             </thead>
             <tbody>
-            <c:forEach var="accident" items="${accidents}">
+            <c:forEach var="accident" varStatus="loop" items="${accidents}">
                 <tr>
-                    <td>${accident.id}</td>
-                    <td>${accident.name}</td>
-                    <td>${accident.text}</td>
-                    <td>${accident.address}</td>
+                    <td><a href="<c:url value="/edit/${accident.id}"/>">edit</a></td>
+                    <td><c:out value="${loop.index}" /></td>
+                    <td><c:out value="${accident.name}" /></td>
+                    <td><c:out value="${accident.text}" /></td>
+                    <td><c:out value="${accident.address}" /></td>
                 </tr>
             </c:forEach>
             </tbody>

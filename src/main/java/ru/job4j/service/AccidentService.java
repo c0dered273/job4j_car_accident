@@ -3,7 +3,9 @@ package ru.job4j.service;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.model.Accident;
 import ru.job4j.repository.AccidentMem;
 
@@ -29,5 +31,25 @@ public class AccidentService {
 
     public List<Accident> getAllAccidents() {
         return accidentRepository.findAll();
+    }
+
+    public Accident getById(String strId) {
+        long id = 0;
+        try {
+            id = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return accidentRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+    }
+
+    public void create(Accident accident) {
+        accidentRepository.save(accident);
+    }
+
+    public void update(Accident accident) {
+        accidentRepository.update(accident);
     }
 }
