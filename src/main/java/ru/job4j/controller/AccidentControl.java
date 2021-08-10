@@ -29,8 +29,8 @@ public class AccidentControl {
         return "redirect:/";
     }
 
-    @GetMapping("/edit/{id}")
-    public String edit(Model model, @PathVariable String id) {
+    @GetMapping("/edit")
+    public String edit(Model model, @RequestParam String id) {
         model.addAttribute("accident", accidentService.getById(id));
         return "accident/edit";
     }

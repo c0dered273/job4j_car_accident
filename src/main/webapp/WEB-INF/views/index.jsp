@@ -44,7 +44,7 @@
             <tbody>
             <c:forEach var="accident" varStatus="loop" items="${accidents}">
                 <tr>
-                    <td><a href="<c:url value="/edit/${accident.id}"/>">edit</a></td>
+                    <td><a href="<c:url value="/edit?id=${accident.id}"/>">edit</a></td>
                     <td><c:out value="${loop.index}" /></td>
                     <td><c:out value="${accident.name}" /></td>
                     <td><c:out value="${accident.text}" /></td>
