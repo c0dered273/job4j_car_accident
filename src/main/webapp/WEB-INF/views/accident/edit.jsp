@@ -36,18 +36,39 @@
                 <label for="accidentName" class="form-label">Name</label>
                 <input type="text" class="form-control" id="accidentName" name="name" value="<c:out value="${accident.name}"/>">
             </div>
-            <div class="form-group mb-3">
-                <label for="accidentType" class="form-label">Type</label>
-                <select class="form-select" id="accidentType" name="type.id">
-                    <c:forEach var="type" items="${types}">
-                        <c:if test="${accident.type.id == type.id}">
-                            <option selected value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
-                        </c:if>
-                        <c:if test="${accident.type.id != type.id}">
-                            <option value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
-                        </c:if>
-                    </c:forEach>
-                </select>
+            <div class="row">
+                <div class="form-group col-auto mb-3">
+                    <label for="accidentType" class="form-label">Type</label>
+                    <select class="form-select" id="accidentType" name="type.id">
+                        <c:forEach var="type" items="${types}">
+                            <c:if test="${accident.type.id == type.id}">
+                                <option selected value="<c:out value="${type.id}"/>"><c:out
+                                        value="${type.name}"/></option>
+                            </c:if>
+                            <c:if test="${accident.type.id != type.id}">
+                                <option value="<c:out value="${type.id}"/>">
+                                    <c:out value="${type.name}"/>
+                                </option>
+                            </c:if>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="form-group col-auto mb-3">
+                    <label for="accidentRules" class="form-label">Rules</label>
+                    <select multiple class="form-select" id="accidentRules" name="rIds">
+                        <c:forEach var="rule" items="${rules}">
+                            <option
+                            <c:forEach var="accRule" items="${accident.rules}">
+                                <c:if test="${accRule.id == rule.id}">
+                                    selected
+                                </c:if>
+                            </c:forEach>
+                                    value="<c:out value="${rule.id}"/>">
+                                <c:out value="${rule.name}"/>
+                            </option>
+                        </c:forEach>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-3">
                 <label for="accidentDesc" class="form-label">Description</label>

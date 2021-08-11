@@ -1,8 +1,5 @@
 package ru.job4j.model;
 
-import java.util.Objects;
-import java.util.Set;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,29 +8,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @RequiredArgsConstructor(staticName = "of")
-public class Accident {
+public class Rule {
 
+    @NonNull
     private long id;
 
     @NonNull
     private String name;
-
-    @NonNull
-    private String text;
-
-    @NonNull
-    private String address;
-
-    @NonNull
-    private AccidentType type;
-
-    @NonNull
-    private Set<Rule> rules;
 
     @Override
     public boolean equals(Object o) {
@@ -43,8 +31,8 @@ public class Accident {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Accident accident = (Accident) o;
-        return id == accident.id;
+        Rule rule = (Rule) o;
+        return id == rule.id;
     }
 
     @Override

@@ -35,9 +35,10 @@
             <thead>
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Id</th>
+                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Type</th>
+                <th scope="col">Rules</th>
                 <th scope="col">Text</th>
                 <th scope="col">Address</th>
             </tr>
@@ -49,6 +50,11 @@
                     <td><c:out value="${loop.index}"/></td>
                     <td><c:out value="${accident.name}"/></td>
                     <td><c:out value="${accident.type.name}"/></td>
+                    <td>
+                        <c:forEach var="rule" items="${accident.rules}">
+                            <c:out value="${rule.name}. "/>
+                        </c:forEach>
+                    </td>
                     <td><c:out value="${accident.text}"/></td>
                     <td><c:out value="${accident.address}"/></td>
                 </tr>
