@@ -34,6 +34,14 @@
                 <input type="text" class="form-control" id="accidentName" name="name">
             </div>
             <div class="form-group mb-3">
+                <label for="accidentType" class="form-label">Type</label>
+                <select class="form-select" id="accidentType" name="type.id">
+                    <c:forEach var="type" items="${types}">
+                        <option value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="form-group mb-3">
                 <label for="accidentDesc" class="form-label">Description</label>
                 <textarea class="form-control" id="accidentDesc" rows="3" name="text"></textarea>
             </div>

@@ -30,12 +30,24 @@
     <div class="mb-3">
         <form action="<c:url value="/edit"/>" method="post">
             <div class="form-group invisible">
-                <label for="accidentId" class="form-label">Id</label>
-                <input type="text" class="form-control" id="accidentId" name="id" value="<c:out value="${accident.id}"/>">
+                <input type="hidden" class="form-control" id="accidentId" name="id" value="<c:out value="${accident.id}"/>">
             </div>
             <div class="form-group mb-3">
                 <label for="accidentName" class="form-label">Name</label>
                 <input type="text" class="form-control" id="accidentName" name="name" value="<c:out value="${accident.name}"/>">
+            </div>
+            <div class="form-group mb-3">
+                <label for="accidentType" class="form-label">Type</label>
+                <select class="form-select" id="accidentType" name="type.id">
+                    <c:forEach var="type" items="${types}">
+                        <c:if test="${accident.type.id == type.id}">
+                            <option selected value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
+                        </c:if>
+                        <c:if test="${accident.type.id != type.id}">
+                            <option value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
+                        </c:if>
+                    </c:forEach>
+                </select>
             </div>
             <div class="form-group mb-3">
                 <label for="accidentDesc" class="form-label">Description</label>

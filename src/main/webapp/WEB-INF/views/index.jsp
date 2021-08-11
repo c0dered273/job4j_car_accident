@@ -31,12 +31,13 @@
         <div class="mb-2">
             <a class="btn btn-primary" role="button" href="<c:url value="/create"/>">Add new accident</a>
         </div>
-        <table class="table caption-top">
+        <table class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
                 <th scope="col">Id</th>
                 <th scope="col">Name</th>
+                <th scope="col">Type</th>
                 <th scope="col">Text</th>
                 <th scope="col">Address</th>
             </tr>
@@ -45,10 +46,11 @@
             <c:forEach var="accident" varStatus="loop" items="${accidents}">
                 <tr>
                     <td><a href="<c:url value="/edit?id=${accident.id}"/>">edit</a></td>
-                    <td><c:out value="${loop.index}" /></td>
-                    <td><c:out value="${accident.name}" /></td>
-                    <td><c:out value="${accident.text}" /></td>
-                    <td><c:out value="${accident.address}" /></td>
+                    <td><c:out value="${loop.index}"/></td>
+                    <td><c:out value="${accident.name}"/></td>
+                    <td><c:out value="${accident.type.name}"/></td>
+                    <td><c:out value="${accident.text}"/></td>
+                    <td><c:out value="${accident.address}"/></td>
                 </tr>
             </c:forEach>
             </tbody>

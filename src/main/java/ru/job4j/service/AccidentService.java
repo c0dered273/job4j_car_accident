@@ -1,5 +1,6 @@
 package ru.job4j.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.model.Accident;
+import ru.job4j.model.AccidentType;
 import ru.job4j.repository.AccidentMem;
 
 @Service
@@ -17,11 +19,21 @@ public class AccidentService {
 
     @PostConstruct
     public void init() {
-        var accident1 = Accident.of("Test Accident 1", "Text of accident 1", "Address of accident 1");
-        var accident2 = Accident.of("Test Accident 2", "Text of accident 2", "Address of accident 2");
-        var accident3 = Accident.of("Test Accident 3", "Text of accident 3", "Address of accident 3");
-        var accident4 = Accident.of("Test Accident 4", "Text of accident 4", "Address of accident 4");
-        var accident5 = Accident.of("Test Accident 5", "Text of accident 5", "Address of accident 5");
+        var accident1 = Accident.of(
+                "Test Accident 1", "Text of accident 1", "Address of accident 1", AccidentType.of(1L, "Две машины")
+        );
+        var accident2 = Accident.of(
+                "Test Accident 2", "Text of accident 2", "Address of accident 2", AccidentType.of(1L, "Машина и человек")
+        );
+        var accident3 = Accident.of(
+                "Test Accident 3", "Text of accident 3", "Address of accident 3", AccidentType.of(1L, "Машина и человек")
+        );
+        var accident4 = Accident.of(
+                "Test Accident 4", "Text of accident 4", "Address of accident 4", AccidentType.of(1L, "Две машины")
+        );
+        var accident5 = Accident.of(
+                "Test Accident 5", "Text of accident 5", "Address of accident 5", AccidentType.of(1L, "Машина и велосипед")
+        );
         accidentRepository.save(accident1);
         accidentRepository.save(accident2);
         accidentRepository.save(accident3);
@@ -46,10 +58,35 @@ public class AccidentService {
     }
 
     public void create(Accident accident) {
-        accidentRepository.save(accident);
+        accidentRepository.save(checkAndSetTypeName(accident));
     }
 
     public void update(Accident accident) {
-        accidentRepository.update(accident);
+        accidentRepository.update(checkAndSetTypeName(accident));
+    }
+
+    public List<AccidentType> getAllTypes() {
+        List<AccidentType> types = new ArrayList<>();
+        types.add(AccidentType.of(1, "Две машины"));
+        types.add(AccidentType.of(2, "Машина и человек"));
+        types.add(AccidentType.of(3, "Машина и велосипед"));
+        return types;
+    }
+
+    public AccidentType getTypeById(long id) {
+        List<AccidentType> types = getAllTypes();
+        return  types.stream()
+                .filter(type -> type.getId() == id)
+                .findAny()
+                .orElseThrow();
+    }
+
+    private Accident checkAndSetTypeName(Accident accident) {
+        AccidentType type = accident.getType();
+        if (type.getName() == null) {
+            type = getTypeById(type.getId());
+            accident.setType(type);
+        }
+        return accident;
     }
 }
