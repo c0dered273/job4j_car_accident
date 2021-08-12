@@ -1,12 +1,9 @@
 package ru.job4j.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,59 +12,19 @@ import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
 import ru.job4j.repository.AccidentMem;
+import ru.job4j.repository.AccidentTypeMem;
+import ru.job4j.repository.RuleMem;
 
 @Service
 @RequiredArgsConstructor
 public class AccidentService {
 
-    private final AccidentMem accidentRepository;
-
-    @PostConstruct
-    public void init() {
-        var accident1 = Accident.of(
-                "Test Accident 1",
-                "Text of accident 1",
-                "Address of accident 1",
-                AccidentType.of(1L, "Две машины"),
-                new HashSet<>(List.of(Rule.of(1, "Статья. 1"), Rule.of(2, "Статья. 2")))
-        );
-        var accident2 = Accident.of(
-                "Test Accident 2",
-                "Text of accident 2",
-                "Address of accident 2",
-                AccidentType.of(1L, "Машина и человек"),
-                new HashSet<>(List.of(Rule.of(1, "Статья. 1"), Rule.of(3, "Статья. 3")))
-        );
-        var accident3 = Accident.of(
-                "Test Accident 3",
-                "Text of accident 3",
-                "Address of accident 3",
-                AccidentType.of(1L, "Машина и человек"),
-                new HashSet<>(List.of(Rule.of(1, "Статья. 1")))
-        );
-        var accident4 = Accident.of(
-                "Test Accident 4",
-                "Text of accident 4",
-                "Address of accident 4",
-                AccidentType.of(1L, "Две машины"),
-                new HashSet<>(List.of(Rule.of(3, "Статья. 3"), Rule.of(2, "Статья. 2")))
-        );
-        var accident5 = Accident.of(
-                "Test Accident 5",
-                "Text of accident 5",
-                "Address of accident 5",
-                AccidentType.of(1L, "Машина и велосипед"),
-                new HashSet<>(List.of(Rule.of(1, "Статья. 1"), Rule.of(2, "Статья. 2")))
-        );
-        accidentRepository.save(accident1);
-        accidentRepository.save(accident2);
-        accidentRepository.save(accident3);
-        accidentRepository.save(accident4);
-        accidentRepository.save(accident5);
-    }
+    private final AccidentMem accidentRepo;
+    private final AccidentTypeMem accidentTypeRepo;
+    private final RuleMem ruleRepo;
 
     public List<Accident> getAllAccidents() {
-        return accidentRepository.findAll();
+        return accidentRepo.findAll();
     }
 
     public Accident getById(String strId) {
@@ -77,25 +34,21 @@ public class AccidentService {
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return accidentRepository.findById(id).orElseThrow(
+        return accidentRepo.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
     }
 
     public void create(Accident accident) {
-        accidentRepository.save(checkAndSetTypeName(accident));
+        accidentRepo.save(checkAndSetTypeName(accident));
     }
 
     public void update(Accident accident) {
-        accidentRepository.update(checkAndSetTypeName(accident));
+        accidentRepo.update(checkAndSetTypeName(accident));
     }
 
     public List<AccidentType> getAllTypes() {
-        List<AccidentType> types = new ArrayList<>();
-        types.add(AccidentType.of(1, "Две машины"));
-        types.add(AccidentType.of(2, "Машина и человек"));
-        types.add(AccidentType.of(3, "Машина и велосипед"));
-        return types;
+        return accidentTypeRepo.findAll();
     }
 
     public AccidentType getTypeById(long id) {
@@ -107,11 +60,7 @@ public class AccidentService {
     }
 
     public List<Rule> getAllRules() {
-        List<Rule> rules = new ArrayList<>();
-        rules.add(Rule.of(1, "Статья. 1"));
-        rules.add(Rule.of(2, "Статья. 2"));
-        rules.add(Rule.of(3, "Статья. 3"));
-        return rules;
+        return ruleRepo.findAll();
     }
 
     public Set<Rule> getRulesOfStringIds(String[] ids) {

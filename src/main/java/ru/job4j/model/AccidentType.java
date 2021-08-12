@@ -17,7 +17,6 @@ import java.util.Objects;
 @RequiredArgsConstructor(staticName = "of")
 public class AccidentType {
 
-    @NonNull
     private long id;
 
     @NonNull

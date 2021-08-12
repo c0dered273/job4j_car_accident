@@ -1,17 +1,18 @@
 package ru.job4j.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Accident;
 
 @Repository
 public class AccidentMem {
 
-    private final HashMap<Long, Accident> accidents = new HashMap<>();
-    private long id;
+    private final Map<Long, Accident> accidents = new ConcurrentHashMap<>();
+    private long id = 1L;
 
     public void save(Accident accident) {
         accident.setId(id++);
