@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor()
 @RequiredArgsConstructor(staticName = "of")
 public class Accident {
 

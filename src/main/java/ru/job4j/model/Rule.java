@@ -13,7 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor()
 @RequiredArgsConstructor(staticName = "of")
 public class Rule {
 

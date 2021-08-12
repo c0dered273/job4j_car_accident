@@ -11,17 +11,17 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
-import ru.job4j.repository.AccidentMem;
-import ru.job4j.repository.AccidentTypeMem;
-import ru.job4j.repository.RuleMem;
+import ru.job4j.repository.AccidentJdbcTemplate;
+import ru.job4j.repository.AccidentTypeJdbcTemplate;
+import ru.job4j.repository.RuleJdbcTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class AccidentService {
 
-    private final AccidentMem accidentRepo;
-    private final AccidentTypeMem accidentTypeRepo;
-    private final RuleMem ruleRepo;
+    private final AccidentJdbcTemplate accidentRepo;
+    private final AccidentTypeJdbcTemplate accidentTypeRepo;
+    private final RuleJdbcTemplate ruleRepo;
 
     public List<Accident> getAllAccidents() {
         return accidentRepo.findAll();
