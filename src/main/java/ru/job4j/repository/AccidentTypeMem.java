@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.AccidentType;
 
@@ -12,10 +13,10 @@ import ru.job4j.model.AccidentType;
 public class AccidentTypeMem {
 
     private final Map<Long, AccidentType> accidentTypes = new ConcurrentHashMap<>();
-    private long id = 1L;
+    private final AtomicLong id = new AtomicLong(1L);
 
     public void save(AccidentType accidentType) {
-        accidentType.setId(id++);
+        accidentType.setId(id.getAndIncrement());
         accidentTypes.put(accidentType.getId(), accidentType);
     }
 

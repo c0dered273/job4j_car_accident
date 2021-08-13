@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Rule;
 
@@ -12,10 +13,10 @@ import ru.job4j.model.Rule;
 public class RuleMem {
 
     private final Map<Long, Rule> rules = new ConcurrentHashMap<>();
-    private long id = 1L;
+    private final AtomicLong id = new AtomicLong(1L);
 
     public void save(Rule rule) {
-        rule.setId(id++);
+        rule.setId(id.getAndIncrement());
         rules.put(rule.getId(), rule);
     }
 
