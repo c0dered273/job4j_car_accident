@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.model.AccidentType;
 
 @Repository
@@ -25,6 +27,14 @@ public class AccidentTypeJdbcTemplate {
 
     private final JdbcTemplate jdbc;
 
+    private final RowMapper<AccidentType> accidentTypeRowMapper = (resultSet, rowNum) -> {
+        var newAccidentType = new AccidentType();
+        newAccidentType.setId(resultSet.getLong("id"));
+        newAccidentType.setName(resultSet.getString("name"));
+        return newAccidentType;
+    };
+
+    @Transactional
     public AccidentType save(AccidentType accidentType) {
         final var sql = "insert into accidenttype(name) values (?) RETURNING id";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -38,6 +48,7 @@ public class AccidentTypeJdbcTemplate {
         return accidentType;
     }
 
+    @Transactional
     public AccidentType update(AccidentType accidentType) {
         final var sql = "update accidenttype set name = ? where id = ?";
         jdbc.update(
@@ -51,7 +62,7 @@ public class AccidentTypeJdbcTemplate {
         final var sql = "select * from accidenttype where id = ?";
         return Optional.ofNullable(jdbc.queryForObject(
                 sql,
-                (resultSet, rowNum) -> mapResultToAccidentType(resultSet),
+                accidentTypeRowMapper,
                 id
         ));
     }
@@ -60,14 +71,7 @@ public class AccidentTypeJdbcTemplate {
         final var sql = "select * from accidenttype";
         return jdbc.query(
                 sql,
-                (resultSet, rowNum) -> mapResultToAccidentType(resultSet)
+                accidentTypeRowMapper
         );
-    }
-
-    private AccidentType mapResultToAccidentType(ResultSet resultSet) throws SQLException {
-        var newAccidentType = new AccidentType();
-        newAccidentType.setId(resultSet.getLong("id"));
-        newAccidentType.setName(resultSet.getString("name"));
-        return newAccidentType;
     }
 }

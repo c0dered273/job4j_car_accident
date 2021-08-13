@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.model.Rule;
 
 @Repository
@@ -25,6 +27,14 @@ public class RuleJdbcTemplate {
 
     private final JdbcTemplate jdbc;
 
+    private final RowMapper<Rule> ruleRowMapper = (resultSet, rowNum) -> {
+        var newRule = new Rule();
+        newRule.setId(resultSet.getLong("id"));
+        newRule.setName(resultSet.getString("name"));
+        return newRule;
+    };
+
+    @Transactional
     public Rule save(Rule rule) {
         final var sql = "insert into rule(name) values (?) RETURNING id";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -38,6 +48,7 @@ public class RuleJdbcTemplate {
         return rule;
     }
 
+    @Transactional
     public Rule update(Rule rule) {
         final var sql = "update rule set name = ? where id = ?";
         jdbc.update(
@@ -51,7 +62,7 @@ public class RuleJdbcTemplate {
         final var sql = "select * from rule where id = ?";
         return Optional.ofNullable(jdbc.queryForObject(
                 sql,
-                (resultSet, rowNum) -> mapResultToRule(resultSet),
+                ruleRowMapper,
                 id
         ));
     }
@@ -60,7 +71,7 @@ public class RuleJdbcTemplate {
         final var sql = "select * from rule";
         return jdbc.query(
                 sql,
-                (resultSet, rowNum) -> mapResultToRule(resultSet)
+                ruleRowMapper
         );
     }
 
@@ -71,7 +82,7 @@ public class RuleJdbcTemplate {
                 where ar.accident_id = ?""";
         return jdbc.query(
                 sql,
-                (resultSet, rowNum) -> mapResultToRule(resultSet),
+                ruleRowMapper,
                 id
         );
     }
@@ -84,12 +95,5 @@ public class RuleJdbcTemplate {
     public int saveRuleByAccidentId(long accidentId, long ruleId) {
         final var sql = "insert into accident_rule(accident_id, rule_id) values (?, ?)";
         return jdbc.update(sql, accidentId, ruleId);
-    }
-
-    private Rule mapResultToRule(ResultSet resultSet) throws SQLException {
-        var newRule = new Rule();
-        newRule.setId(resultSet.getLong("id"));
-        newRule.setName(resultSet.getString("name"));
-        return newRule;
     }
 }

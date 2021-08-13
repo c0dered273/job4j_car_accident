@@ -13,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
@@ -30,6 +32,18 @@ public class AccidentJdbcTemplate {
     private final AccidentTypeJdbcTemplate accidentTypeRepo;
     private final RuleJdbcTemplate ruleRepo;
 
+    private final RowMapper<Accident> accidentRowMapper = (resultSet, rowNum) -> {
+        var newAccident = new Accident();
+        newAccident.setId(resultSet.getLong("id"));
+        newAccident.setName(resultSet.getString("name"));
+        newAccident.setText(resultSet.getString("text"));
+        newAccident.setAddress(resultSet.getString("address"));
+        newAccident.setType(mapResultToAccidentType(resultSet));
+        newAccident.setRules(mapResultToRulesSet(resultSet));
+        return newAccident;
+    };
+
+    @Transactional
     public Accident save(Accident accident) {
         final var sql = """
                 insert into accident(name, text, address, type_id)
@@ -49,6 +63,7 @@ public class AccidentJdbcTemplate {
         return accident;
     }
 
+    @Transactional
     public Accident update(Accident accident) {
         final var sql = """
                 update accident set
@@ -69,7 +84,7 @@ public class AccidentJdbcTemplate {
         final var sql = "select * from accident where id = ?";
         return Optional.ofNullable(jdbc.queryForObject(
                 sql,
-                (resultSet, rowNum) -> mapResultToAccident(resultSet),
+                accidentRowMapper,
                 id
         ));
     }
@@ -78,19 +93,8 @@ public class AccidentJdbcTemplate {
         final var sql = "select * from accident";
         return jdbc.query(
                 sql,
-                (resultSet, rowNum) -> mapResultToAccident(resultSet)
+                accidentRowMapper
         );
-    }
-
-    private Accident mapResultToAccident(ResultSet resultSet) throws SQLException {
-        var newAccident = new Accident();
-        newAccident.setId(resultSet.getLong("id"));
-        newAccident.setName(resultSet.getString("name"));
-        newAccident.setText(resultSet.getString("text"));
-        newAccident.setAddress(resultSet.getString("address"));
-        newAccident.setType(mapResultToAccidentType(resultSet));
-        newAccident.setRules(mapResultToRulesSet(resultSet));
-        return newAccident;
     }
 
     private AccidentType mapResultToAccidentType(ResultSet resultSet) throws SQLException {
