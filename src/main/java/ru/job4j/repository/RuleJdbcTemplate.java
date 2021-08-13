@@ -1,31 +1,31 @@
 package ru.job4j.repository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.job4j.model.Rule;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Repository
-@RequiredArgsConstructor
 public class RuleJdbcTemplate {
 
     private static final Logger logger = LogManager.getLogger(RuleJdbcTemplate.class);
 
     private final JdbcTemplate jdbc;
+    private final TransactionTemplate transactionTemplate;
 
     private final RowMapper<Rule> ruleRowMapper = (resultSet, rowNum) -> {
         var newRule = new Rule();
@@ -34,28 +34,37 @@ public class RuleJdbcTemplate {
         return newRule;
     };
 
-    @Transactional
+    public RuleJdbcTemplate(
+            @Autowired JdbcTemplate jdbc,
+            @Autowired PlatformTransactionManager transactionManager) {
+        this.jdbc = jdbc;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
+
     public Rule save(Rule rule) {
         final var sql = "insert into rule(name) values (?) RETURNING id";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(connection -> {
-            PreparedStatement ps =
-                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, rule.getName());
-            return ps;
-        }, keyHolder);
-        rule.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-        return rule;
+        return transactionTemplate.execute(status -> {
+            jdbc.update(connection -> {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, rule.getName());
+                return ps;
+            }, keyHolder);
+            rule.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+            return rule;
+        });
     }
 
-    @Transactional
     public Rule update(Rule rule) {
         final var sql = "update rule set name = ? where id = ?";
-        jdbc.update(
-                sql,
-                rule.getName(),
-                rule.getId());
-        return rule;
+        return transactionTemplate.execute(status -> {
+            jdbc.update(
+                    sql,
+                    rule.getName(),
+                    rule.getId());
+            return rule;
+        });
     }
 
     public Optional<Rule> findById(long id) {

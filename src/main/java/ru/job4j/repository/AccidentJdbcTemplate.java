@@ -9,21 +9,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
 
 @Repository
-@RequiredArgsConstructor
 public class AccidentJdbcTemplate {
 
     private static final Logger logger = LogManager.getLogger(AccidentJdbcTemplate.class);
@@ -31,6 +31,7 @@ public class AccidentJdbcTemplate {
     private final JdbcTemplate jdbc;
     private final AccidentTypeJdbcTemplate accidentTypeRepo;
     private final RuleJdbcTemplate ruleRepo;
+    private final TransactionTemplate transactionTemplate;
 
     private final RowMapper<Accident> accidentRowMapper = (resultSet, rowNum) -> {
         var newAccident = new Accident();
@@ -43,41 +44,54 @@ public class AccidentJdbcTemplate {
         return newAccident;
     };
 
-    @Transactional
+    public AccidentJdbcTemplate(
+            @Autowired JdbcTemplate jdbc,
+            @Autowired AccidentTypeJdbcTemplate accidentTypeRepo,
+            @Autowired RuleJdbcTemplate ruleRepo,
+            @Autowired PlatformTransactionManager transactionManager) {
+        this.jdbc = jdbc;
+        this.accidentTypeRepo = accidentTypeRepo;
+        this.ruleRepo = ruleRepo;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
+
     public Accident save(Accident accident) {
         final var sql = """
                 insert into accident(name, text, address, type_id)
                 values (?, ?, ?, ?) RETURNING id""";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(connection -> {
-            PreparedStatement ps =
-                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, accident.getName());
-            ps.setString(2, accident.getText());
-            ps.setString(3, accident.getAddress());
-            ps.setLong(4, accident.getType().getId());
-            return ps;
-        }, keyHolder);
-        accident.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-        saveRulesFromSet(accident);
-        return accident;
+        return transactionTemplate.execute(status -> {
+            jdbc.update(connection -> {
+                PreparedStatement ps =
+                        connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, accident.getName());
+                ps.setString(2, accident.getText());
+                ps.setString(3, accident.getAddress());
+                ps.setLong(4, accident.getType().getId());
+                return ps;
+            }, keyHolder);
+            accident.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+            saveRulesFromSet(accident);
+            return accident;
+        });
     }
 
-    @Transactional
     public Accident update(Accident accident) {
         final var sql = """
                 update accident set
                 name = ?, text = ?, address = ?, type_id = ?
                 where id = ?""";
-        jdbc.update(
-                sql,
-                accident.getName(),
-                accident.getText(),
-                accident.getAddress(),
-                accident.getType().getId(),
-                accident.getId());
-        saveRulesFromSet(accident);
-        return accident;
+        return transactionTemplate.execute(status -> {
+            jdbc.update(
+                    sql,
+                    accident.getName(),
+                    accident.getText(),
+                    accident.getAddress(),
+                    accident.getType().getId(),
+                    accident.getId());
+            saveRulesFromSet(accident);
+            return accident;
+        });
     }
 
     public Optional<Accident> findById(long id) {
