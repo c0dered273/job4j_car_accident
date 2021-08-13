@@ -11,17 +11,17 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
-import ru.job4j.repository.AccidentJdbcTemplate;
-import ru.job4j.repository.AccidentTypeJdbcTemplate;
-import ru.job4j.repository.RuleJdbcTemplate;
+import ru.job4j.repository.AccidentHbm;
+import ru.job4j.repository.AccidentTypeHbm;
+import ru.job4j.repository.RuleHbm;
 
 @Service
 @RequiredArgsConstructor
 public class AccidentService {
 
-    private final AccidentJdbcTemplate accidentRepo;
-    private final AccidentTypeJdbcTemplate accidentTypeRepo;
-    private final RuleJdbcTemplate ruleRepo;
+    private final AccidentHbm accidentRepo;
+    private final AccidentTypeHbm accidentTypeRepo;
+    private final RuleHbm ruleRepo;
 
     public List<Accident> getAllAccidents() {
         return accidentRepo.findAll();
@@ -52,11 +52,8 @@ public class AccidentService {
     }
 
     public AccidentType getTypeById(long id) {
-        List<AccidentType> types = getAllTypes();
-        return  types.stream()
-                .filter(type -> type.getId() == id)
-                .findAny()
-                .orElseThrow();
+        return accidentTypeRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public List<Rule> getAllRules() {
@@ -70,20 +67,14 @@ public class AccidentService {
     }
 
     public Rule getRuleById(String strId) {
-        List<Rule> rules = getAllRules();
         long id = 0;
         try {
             id = Long.parseLong(strId);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        long finalId = id;
-        return rules.stream()
-                .filter(rule -> rule.getId() == finalId)
-                .findAny()
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-                );
+        return ruleRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     private Accident checkAndSetTypeName(Accident accident) {

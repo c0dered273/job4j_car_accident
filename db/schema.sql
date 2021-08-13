@@ -29,8 +29,7 @@ CREATE TABLE rule
 
 CREATE TABLE accident_rule
 (
-    id   INT GENERATED ALWAYS AS IDENTITY,
     accident_id INT NOT NULL,
     rule_id INT NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (accident_id, rule_id)
 );

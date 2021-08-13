@@ -23,7 +23,7 @@ import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
 
-@Repository
+//@Repository
 public class AccidentJdbcTemplate {
 
     private static final Logger logger = LogManager.getLogger(AccidentJdbcTemplate.class);

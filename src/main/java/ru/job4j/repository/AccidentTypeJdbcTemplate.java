@@ -17,7 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import ru.job4j.model.AccidentType;
 
-@Repository
+//@Repository
 public class AccidentTypeJdbcTemplate {
 
     private static final Logger logger = LogManager.getLogger(AccidentTypeJdbcTemplate.class);

@@ -1,9 +1,19 @@
 package ru.job4j.model;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import lombok.AccessLevel;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,8 +26,12 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor()
 @RequiredArgsConstructor(staticName = "of")
+@Entity
+@Table(name = "accident")
 public class Accident {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NonNull
@@ -30,10 +44,20 @@ public class Accident {
     private String address;
 
     @NonNull
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "type_id")
     private AccidentType type;
 
     @NonNull
-    private Set<Rule> rules;
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "accident_rule",
+            joinColumns = @JoinColumn(name = "accident_id"),
+            inverseJoinColumns = @JoinColumn(name = "rule_id"))
+    private Set<Rule> rules = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
