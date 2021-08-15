@@ -8,6 +8,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 import ru.job4j.config.DataConfig;
+import ru.job4j.config.SecurityConfig;
 import ru.job4j.config.WebConfig;
 
 public class WebInit implements WebApplicationInitializer {
@@ -15,7 +16,7 @@ public class WebInit implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) {
         AnnotationConfigWebApplicationContext ac = new AnnotationConfigWebApplicationContext();
-        ac.register(WebConfig.class, DataConfig.class);
+        ac.register(WebConfig.class, DataConfig.class, SecurityConfig.class);
         ac.refresh();
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
