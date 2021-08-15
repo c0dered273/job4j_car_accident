@@ -14,7 +14,7 @@ import ru.job4j.repository.AccidentMem;
 import ru.job4j.repository.AccidentTypeMem;
 import ru.job4j.repository.RuleMem;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class AccidentMemInit {
 

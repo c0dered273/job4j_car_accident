@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Rule;
 
-@Repository
+//@Repository
 public class RuleMem {
 
     private final Map<Long, Rule> rules = new ConcurrentHashMap<>();

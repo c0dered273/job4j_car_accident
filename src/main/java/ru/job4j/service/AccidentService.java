@@ -1,27 +1,33 @@
 package ru.job4j.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.model.Accident;
 import ru.job4j.model.AccidentType;
 import ru.job4j.model.Rule;
-import ru.job4j.repository.AccidentHbm;
-import ru.job4j.repository.AccidentTypeHbm;
-import ru.job4j.repository.RuleHbm;
+import ru.job4j.repository.AccidentRepository;
+import ru.job4j.repository.AccidentTypeRepository;
+import ru.job4j.repository.RuleRepository;
 
 @Service
 @RequiredArgsConstructor
 public class AccidentService {
 
-    private final AccidentHbm accidentRepo;
-    private final AccidentTypeHbm accidentTypeRepo;
-    private final RuleHbm ruleRepo;
+    final Logger logger = LoggerFactory.getLogger(AccidentService.class);
+
+    private final AccidentRepository accidentRepo;
+    private final AccidentTypeRepository accidentTypeRepo;
+    private final RuleRepository ruleRepo;
 
     public List<Accident> getAllAccidents() {
         return accidentRepo.findAll();
@@ -39,16 +45,16 @@ public class AccidentService {
         );
     }
 
-    public void create(Accident accident) {
+    @Transactional
+    public void saveOrUpdate(Accident accident, String[] ids) {
+        accident.setRules(getRulesOfStringIds(ids));
         accidentRepo.save(checkAndSetTypeName(accident));
     }
 
-    public void update(Accident accident) {
-        accidentRepo.update(checkAndSetTypeName(accident));
-    }
-
     public List<AccidentType> getAllTypes() {
-        return accidentTypeRepo.findAll();
+        List<AccidentType> result = new ArrayList<>();
+        accidentTypeRepo.findAll().forEach(result::add);
+        return result;
     }
 
     public AccidentType getTypeById(long id) {
@@ -57,7 +63,9 @@ public class AccidentService {
     }
 
     public List<Rule> getAllRules() {
-        return ruleRepo.findAll();
+        List<Rule> result = new ArrayList<>();
+        ruleRepo.findAll().forEach(result::add);
+        return result;
     }
 
     public Set<Rule> getRulesOfStringIds(String[] ids) {

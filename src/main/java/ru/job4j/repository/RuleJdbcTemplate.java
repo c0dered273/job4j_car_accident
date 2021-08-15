@@ -5,8 +5,6 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,8 +17,6 @@ import ru.job4j.model.Rule;
 
 //@Repository
 public class RuleJdbcTemplate {
-
-    private static final Logger logger = LogManager.getLogger(RuleJdbcTemplate.class);
 
     private final JdbcTemplate jdbc;
     private final TransactionTemplate transactionTemplate;

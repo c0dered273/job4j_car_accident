@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,11 @@ import lombok.ToString;
 @RequiredArgsConstructor(staticName = "of")
 @Entity
 @Table(name = "accident")
+@NamedEntityGraph(
+        name = "accident-type-rules",
+        attributeNodes = {
+                @NamedAttributeNode("type"),
+                @NamedAttributeNode("rules")})
 public class Accident {
 
     @Id

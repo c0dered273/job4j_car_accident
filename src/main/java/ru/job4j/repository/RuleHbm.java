@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Rule;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class RuleHbm implements HbmRepository {
 

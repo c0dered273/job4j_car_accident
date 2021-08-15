@@ -13,7 +13,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Configuration
+//@Configuration
 @PropertySource("classpath:app.properties")
 @EnableTransactionManagement
 public class HbmConfig {
@@ -42,9 +42,6 @@ public class HbmConfig {
         Properties cfg = new Properties();
         cfg.setProperty("hibernate.dialect", dialect);
         cfg.setProperty("hibernate.hbm2ddl.auto", "update");
-        cfg.setProperty("hibernate.show_sql", "true");
-        cfg.setProperty("hibernate.format_sql", "true");
-        cfg.setProperty("hibernate.use_sql_comments", "true");
         sessionFactory.setHibernateProperties(cfg);
         return sessionFactory;
     }

@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 import ru.job4j.model.Accident;
 
-@Repository
+//@Repository
 public class AccidentMem {
 
     private final Map<Long, Accident> accidents = new ConcurrentHashMap<>();
