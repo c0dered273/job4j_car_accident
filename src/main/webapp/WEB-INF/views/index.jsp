@@ -17,6 +17,11 @@
 </head>
 <body>
 <div class="container">
+    <div class="row mt-3 justify-content-end">
+        <div class="col-2 text-end">
+            <a class="link-primary" href="<c:url value='/login?logout=true'/>">Login as : ${user.username} | logout</a>
+        </div>
+    </div>
     <div class="mt-3 mb-3">
         <ul class="nav nav-tabs">
             <li class="nav-item">

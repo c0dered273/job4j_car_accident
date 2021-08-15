@@ -1,5 +1,7 @@
 package ru.job4j.config;
 
+import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,15 +13,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final DataSource ds;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
+        auth.jdbcAuthentication()
+                .dataSource(ds)
                 .passwordEncoder(passwordEncoder())
-                .withUser("user").password(passwordEncoder().encode("user")).roles("USER")
-                .and()
-                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN", "USER");
+                .withUser("user")
+                .password(passwordEncoder().encode("user"))
+                .roles("USER");
     }
 
     @Override
