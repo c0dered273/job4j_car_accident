@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: c0dered
-  Date: 15.08.2021
-  Time: 22:47
+  Date: 16.08.2021
+  Time: 22:33
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -18,16 +18,12 @@
 <body>
 <div class="container">
     <div class="card mx-auto mt-3" style="width: 20rem;">
+        <div class="mb-3">
+            <p>New user</p>
+        </div>
         <div class="card-body">
             <div class="mb-3">
-                <c:if test="${not empty errorMessage}">
-                    <div style="color:red; font-weight: bold; margin: 30px 0px;">
-                            ${errorMessage}
-                    </div>
-                </c:if>
-            </div>
-            <div class="mb-3">
-                <form name='login' action="<c:url value='/login'/>" method="post">
+                <form name='login' action="<c:url value='/reg'/>" method="post">
                     <div class=mb-3>
                         <label for="inputLogin" class="form-label">Login</label>
                         <input type="text" class="form-control" id="inputLogin" name='username'>
@@ -41,11 +37,9 @@
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
-                <div class="mb-3">
-                    <a class="link-primary" href="<c:url value='/reg'/>">Register</a>
-                </div>
             </div>
         </div>
+        <a class="link-primary" href="<c:url value='/reg'/>">Register</a>
     </div>
 </div>
 </body>

@@ -23,16 +23,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
                 .dataSource(ds)
                 .passwordEncoder(passwordEncoder())
-                .withUser("user")
-                .password(passwordEncoder().encode("user"))
-                .roles("USER");
+                .usersByUsernameQuery("select username, password, enabled "
+                        + "from users "
+                        + "where username = ?")
+                .authoritiesByUsernameQuery(
+                        " select u.username, a.authority "
+                                + "from authorities as a, users as u "
+                                + "where u.username = ? and u.authority_id = a.id");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login", "/reg").permitAll()
                 .antMatchers("/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
