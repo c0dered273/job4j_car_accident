@@ -23,6 +23,13 @@
         </div>
         <div class="card-body">
             <div class="mb-3">
+                <c:if test="${not empty errorMessage}">
+                    <div style="color:red; font-weight: bold; margin: 30px 0px;">
+                            ${errorMessage}
+                    </div>
+                </c:if>
+            </div>
+            <div class="mb-3">
                 <form name='login' action="<c:url value='/reg'/>" method="post">
                     <div class=mb-3>
                         <label for="inputLogin" class="form-label">Login</label>
@@ -39,7 +46,6 @@
                 </form>
             </div>
         </div>
-        <a class="link-primary" href="<c:url value='/reg'/>">Register</a>
     </div>
 </div>
 </body>
